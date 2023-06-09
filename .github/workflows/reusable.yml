@@ -6,8 +6,14 @@ on:
         description: The name of the artifact file
         required: true
         type: string
-jobs:
+    outputs:
+      result:
+        description: Result of the deploy operation
+        value: ${{ jobs.deploy.outputs.outcome }}
+jobs:    
   deploy:
+    outputs:
+      outcome: ${{ steps.set-result.outputs.step-result }}
     runs-on: ubuntu-latest
     steps:
       - name: Get code
@@ -17,4 +23,7 @@ jobs:
       - name: List files
         run: ls
       - name: Output Info
-        run: echo "Deploying and uploading"  
+        run: echo "Deploying and uploading"
+      - name: Set output value
+        id: set-result
+        run: echo "step-result=SUCCESS" >> $GITHUB_OUTPUT
